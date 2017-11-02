@@ -30,10 +30,10 @@ lr_schedule = [60, 120]
 
 def schedule(epoch_idx):
     if (epoch_idx + 1) < lr_schedule[0]:
-        return 0.1
+        return 0.02
     elif (epoch_idx + 1) < lr_schedule[1]:
-        return 0.01 # lr_decay_ratio = 0.2
-    return 0.001
+        return 0.004
+    return 0.0008
 
 # Training params.
 batch_size = 128
