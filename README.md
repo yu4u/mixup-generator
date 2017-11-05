@@ -28,7 +28,7 @@ training_generator = MixupGenerator(x_train, y_train, batch_size=batch_size, alp
 ```
 
 - `x_train` : training images (#images x h x w x c)
-- `y_train` : labels as one hot vectors (#images x #classes)
+- `y_train` : labels as one hot vectors (#images x #classes or list of #images x #classes for multi-task training)
 - `batch_size` : batch size
 - `alpha` : hyper parameter; `lambda` is drawn from the beta distribution `Be(alpha, alpha)`.
 
@@ -73,6 +73,32 @@ In this case, the *mixed-up* training images are further augmented by ImageDataG
 
 <img src="example2.png" width="480px">
 
+### Mixup with Random Erasing
+Random Erasing [2] is a kind of image augmentation methods for convolutional neural networks (CNN).
+It tries to regularize models using training images that are randomly masked with random values.
+
+Please refer to [this repository](https://github.com/yu4u/cutout-random-erasing)
+for the details of algorithm and its implementation.
+
+Mixup can be combined with Random Erasing via ImageDataGenerator by:
+
+```python
+from random_eraser import get_random_eraser
+
+datagen = ImageDataGenerator(
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    horizontal_flip=True,
+    preprocessing_function=get_random_eraser(v_l=0, v_h=255))
+
+generator = MixupGenerator(x_train, y_train, alpha=1.0, datagen=datagen)()
+```
+
+The augmented images become like this:
+
+<img src="example3.png" width="480px">
+
+
 ## Results
 (!Only a single trial)
 
@@ -106,3 +132,5 @@ Test accuracy: 0.9167
 
 ## References
 [1] H. Zhang, M. Cisse, Y. N. Dauphin, and D. Lopez-Paz, "mixup: Beyond Empirical Risk Minimization," in arXiv:1710.09412, 2017.
+
+[2] Z. Zhong, L. Zheng, G. Kang, S. Li, and Y. Yang, "Random Erasing Data Augmentation," in arXiv:1708.04896, 2017.
